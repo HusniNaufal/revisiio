@@ -1,50 +1,60 @@
 import React from 'react';
-import { Trash2, UserPlus, Pencil } from 'lucide-react';
+import { Users2, Network } from 'lucide-react';
 
-export default function Teams({ teamsData, role, handleDeleteTeam, setIsModalUserOpen, handleEditTeam }) {
+export default function Teams({ teamsData, assignments, currentUser }) {
+  
+  // Filter visibility based on role
+  let visibleUsers = [];
+
+  if (currentUser.role === 'Super Admin') {
+    visibleUsers = teamsData;
+  } else if (currentUser.role.toLowerCase().includes('client')) {
+    // Client sees themselves and all CCs assigned to them
+    const assignedIds = assignments.filter(a => a.client_id === currentUser.id).map(a => a.cc_id);
+    visibleUsers = teamsData.filter(u => u.id === currentUser.id || assignedIds.includes(u.id));
+  } else {
+    // CC sees themselves, their assigned Clients, and fellow CCs for those clients
+    const clientIds = assignments.filter(a => a.cc_id === currentUser.id).map(a => a.client_id);
+    const fellowCCIds = assignments.filter(a => clientIds.includes(a.client_id)).map(a => a.cc_id);
+    
+    // Merge unique IDs
+    const allVisibleIds = [...new Set([...clientIds, ...fellowCCIds, currentUser.id])];
+    visibleUsers = teamsData.filter(u => allVisibleIds.includes(u.id));
+  }
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6 text-left animate-in fade-in">
+    <div className="max-w-4xl mx-auto space-y-6 text-left animate-in fade-in pb-10">
        
-       {role === 'Super Admin' && (
-         <div className="bg-white rounded-[2.5rem] border border-slate-100 p-8 flex items-center justify-between shadow-sm">
-            <div>
-              <h3 className="text-xl font-black text-slate-900 uppercase">Kelola Pengguna</h3>
-              <p className="text-[10px] font-bold text-slate-400 mt-1">Super Admin Access: Anda memiliki hak untuk menambah, mengubah, dan menghapus tim.</p>
-            </div>
-            <button onClick={() => setIsModalUserOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-4 rounded-2xl text-[10px] font-black flex items-center gap-3 transition-all shadow-xl shadow-indigo-100 active:scale-95">
-               <UserPlus size={16} strokeWidth={3} /> TAMBAH ANGGOTA
-            </button>
-         </div>
-       )}
+       <div className="bg-white rounded-[2.5rem] border border-slate-100 p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+          <div>
+            <h3 className="text-xl font-black text-slate-900 uppercase">Circle Kerja Anda</h3>
+            <p className="text-[10px] font-bold text-slate-400 mt-1">Daftar klien dan kolega yang terhubung langsung dengan Anda.</p>
+          </div>
+          <div className="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center">
+            <Network size={20} className="opacity-80" />
+          </div>
+       </div>
 
        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-         {teamsData.map((tm, idx) => (
-           <div key={tm.id || idx} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center justify-between hover:translate-y-[-4px] transition-all group">
-              <div className="flex items-center gap-6">
-                <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center font-black text-indigo-600 text-lg italic uppercase">{tm.name.charAt(0)}</div>
+         {visibleUsers.map((tm, idx) => (
+           <div key={tm.id || idx} className={`bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center justify-between hover:border-indigo-100 transition-all ${tm.id === currentUser.id ? 'ring-2 ring-indigo-500 ring-offset-2' : ''}`}>
+              <div className="flex items-center gap-5">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg italic uppercase ${tm.role.toLowerCase().includes('client') ? 'bg-orange-50 text-orange-500' : 'bg-indigo-50 text-indigo-600'}`}>
+                  {tm.name.charAt(0)}
+                </div>
                 <div>
-                   <h4 className="font-black text-slate-900 uppercase tracking-tight">{tm.name}</h4>
-                   <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1">{tm.role}</p>
+                   <h4 className="font-black text-sm text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                     {tm.name}
+                     {tm.id === currentUser.id && <span className="text-[8px] bg-indigo-500 text-white px-2 py-0.5 rounded-full">YOU</span>}
+                   </h4>
+                   <p className={`text-[9px] font-bold uppercase tracking-widest mt-1 ${tm.role.toLowerCase().includes('client') ? 'text-orange-500' : 'text-indigo-500'}`}>
+                     {tm.role}
+                   </p>
                    {tm.username && (
-                     <p className="text-[9px] font-bold text-slate-400 mt-0.5">@{tm.username}</p>
+                     <p className="text-[9px] font-medium text-slate-400 mt-0.5">@{tm.username}</p>
                    )}
-                   <div className="flex items-center gap-2 mt-2">
-                      <div className={`w-1.5 h-1.5 rounded-full ${tm.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
-                      <span className="text-[9px] font-black text-slate-400 uppercase">{tm.status}</span>
-                   </div>
                 </div>
               </div>
-              
-              {role === 'Super Admin' && (
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                  <button onClick={() => handleEditTeam(idx)} className="w-10 h-10 bg-slate-50 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-xl flex items-center justify-center transition-all active:scale-90">
-                     <Pencil size={16} />
-                  </button>
-                  <button onClick={() => handleDeleteTeam(idx)} className="w-10 h-10 bg-slate-50 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl flex items-center justify-center transition-all active:scale-90">
-                     <Trash2 size={16} />
-                  </button>
-                </div>
-              )}
            </div>
          ))}
        </div>

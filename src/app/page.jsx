@@ -8,7 +8,7 @@ import {
   Layers, 
   Search,
   Users,
-  Settings,
+  Settings as SettingsIcon,
   Archive as ArchiveIcon,
   Menu
 } from 'lucide-react';
@@ -19,10 +19,14 @@ import {
   fetchTeamsData,
   createProject,
   updateProjectStatus,
+  uploadNewVersion,
   postComment,
   addTeamMember,
   updateTeamMember,
-  deleteTeamMember
+  deleteTeamMember,
+  fetchAssignments,
+  assignTeamMember,
+  removeTeamAssignment
 } from '../lib/supabaseHelpers';
 
 // Components
@@ -34,6 +38,7 @@ import Dashboard from '../views/Dashboard';
 import Workflow from '../views/Workflow';
 import Archive from '../views/Archive';
 import Teams from '../views/Teams';
+import Settings from '../views/Settings';
 
 // Modals
 import ContentDetailModal from '../modals/ContentDetailModal';
@@ -49,6 +54,7 @@ export default function App() {
   
   const [kontenData, setKontenData] = useState({ Draft: [], Review: [], Revisi: [], Approved: [] });
   const [teamsData, setTeamsData] = useState([]);
+  const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [notifications, setNotifications] = useState([]);
@@ -56,7 +62,7 @@ export default function App() {
   const [viewingVersion, setViewingVersion] = useState(null);
   
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
-  const [newContent, setNewContent] = useState({ title: '', type: 'doc', deadline: '', priority: 'Medium' });
+  const [newContent, setNewContent] = useState({ title: '', type: 'doc', deadline: '', priority: 'Medium', clientId: '' });
   
   const [isModalUserOpen, setIsModalUserOpen] = useState(false);
   const [newUser, setNewUser] = useState({ name: '', role: 'Creator', status: 'Active', username: '', password: '' });
@@ -73,23 +79,44 @@ export default function App() {
     setTimeout(() => setNotifications(prev => prev.filter(n => n.id !== id)), 4000);
   };
 
-  // Refresh data dari Supabase
+  // Refresh hanya data konten
+  const refreshKonten = useCallback(async () => {
+    if (!currentUser) return;
+    const konten = await fetchKontenData(currentUser);
+    setKontenData(konten);
+  }, [currentUser]);
+
+  // Refresh hanya data tim & assignment
+  const refreshTeams = useCallback(async () => {
+    if (!currentUser) return;
+    const [teams, asg] = await Promise.all([
+      fetchTeamsData(currentUser),
+      fetchAssignments()
+    ]);
+    setTeamsData(teams);
+    setAssignments(asg || []);
+  }, [currentUser]);
+
+  // Refresh semua data dari Supabase (untuk initial load)
   const refreshData = useCallback(async () => {
-    const [konten, teams] = await Promise.all([
-      fetchKontenData(),
-      fetchTeamsData()
+    if (!currentUser) return;
+    const [konten, teams, asg] = await Promise.all([
+      fetchKontenData(currentUser),
+      fetchTeamsData(currentUser),
+      fetchAssignments()
     ]);
     setKontenData(konten);
     setTeamsData(teams);
+    setAssignments(asg || []);
     setIsLoading(false);
-  }, []);
+  }, [currentUser]);
 
   // Load data saat login
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && currentUser) {
       refreshData();
     }
-  }, [isLoggedIn, refreshData]);
+  }, [isLoggedIn, currentUser, refreshData]);
 
   const handleLogin = (userData) => {
     setRole(userData.role);
@@ -100,6 +127,10 @@ export default function App() {
 
   const handleCreateContent = async (e) => {
     e.preventDefault();
+    if (!newContent.clientId) {
+      notify("Pilih klien terlebih dahulu!");
+      return;
+    }
     const authorName = currentUser?.name || 'Unknown';
     const authorInitial = authorName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 
@@ -110,13 +141,14 @@ export default function App() {
       priority: newContent.priority,
       authorName,
       authorInitial,
-      userRole: role
+      userRole: role,
+      clientId: newContent.clientId
     });
 
     if (result) {
       await refreshData();
       setIsModalCreateOpen(false);
-      setNewContent({ title: '', type: 'doc', deadline: '', priority: 'Medium' });
+      setNewContent({ title: '', type: 'doc', deadline: '', priority: 'Medium', clientId: '' });
       notify("Projek baru berhasil dibuat.");
     }
   };
@@ -124,10 +156,20 @@ export default function App() {
   const handleUpdateStatus = async (contentId, currentStatus, newStatus) => {
     const success = await updateProjectStatus(contentId, currentStatus, newStatus, role);
     if (success) {
-      await refreshData();
+      await refreshKonten();
       setSelectedContent(null);
       setViewingVersion(null);
       notify(`Konten dipindahkan ke status: ${newStatus}`);
+    }
+  };
+
+  const handleUploadVersion = async (contentId, note) => {
+    const success = await uploadNewVersion(contentId, role, note);
+    if (success) {
+      await refreshKonten();
+      setSelectedContent(null);
+      setViewingVersion(null);
+      notify('Versi baru berhasil diunggah.');
     }
   };
 
@@ -144,7 +186,7 @@ export default function App() {
     );
 
     if (result) {
-      await refreshData();
+      await refreshKonten();
       setCommentInput("");
       notify("Feedback berhasil disimpan.");
     }
@@ -161,7 +203,7 @@ export default function App() {
         setUserModalError(result.error.includes('unique') ? 'Username sudah dipakai pengguna lain.' : result.error);
         return;
       }
-      await refreshData();
+      await refreshTeams();
       setIsModalUserOpen(false);
       setEditingUserId(null);
       setNewUser({ name: '', role: 'Creator', status: 'Active', username: '', password: '' });
@@ -173,7 +215,7 @@ export default function App() {
         setUserModalError(result.error.includes('unique') ? 'Username sudah dipakai.' : result.error);
         return;
       }
-      await refreshData();
+      await refreshTeams();
       setIsModalUserOpen(false);
       setNewUser({ name: '', role: 'Creator', status: 'Active', username: '', password: '' });
       notify("Anggota tim berhasil ditambahkan.");
@@ -195,8 +237,26 @@ export default function App() {
     
     const success = await deleteTeamMember(member.id);
     if (success) {
-      await refreshData();
+      await refreshTeams();
       notify("Anggota tim berhasil dihapus.");
+    }
+  };
+
+  const handleAssign = async (clientId, ccId) => {
+    const res = await assignTeamMember(clientId, ccId);
+    if (!res.error) {
+      await refreshTeams();
+      notify('Anggota berhasil ditugaskan ke klien.');
+    } else {
+      notify(res.error);
+    }
+  };
+
+  const handleRemoveAssign = async (clientId, ccId) => {
+    const res = await removeTeamAssignment(clientId, ccId);
+    if (res) {
+      await refreshTeams();
+      notify('Tugas dibatalkan.');
     }
   };
 
@@ -254,7 +314,9 @@ export default function App() {
           </nav>
 
           <div className="pt-10 border-t border-slate-50 space-y-2">
-             <SidebarLink icon={<Settings size={18} />} label="Pengaturan" active={activeNav === 'Settings'} onClick={() => setActiveNav('Settings')} />
+             {role === 'Super Admin' && (
+               <SidebarLink icon={<SettingsIcon size={18} />} label="Pengaturan" active={activeNav === 'Settings'} onClick={() => setActiveNav('Settings')} />
+             )}
           </div>
         </div>
 
@@ -302,7 +364,7 @@ export default function App() {
                  />
               </div>
 
-              {(!role.toLowerCase().includes('client') && role !== 'Reviewer') && (
+              {((!role.toLowerCase().includes('client') && role !== 'Reviewer') || role === 'Super Admin') && (
                 <button onClick={() => setIsModalCreateOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 md:px-8 md:py-4 rounded-2xl text-[10px] font-black flex items-center gap-2 md:gap-3 transition-all shadow-xl shadow-indigo-100 active:scale-95">
                   <Plus size={16} strokeWidth={3} /> <span className="hidden md:inline">UNGGAH BARU</span><span className="md:hidden">BARU</span>
                 </button>
@@ -338,9 +400,19 @@ export default function App() {
           {activeNav === 'Teams' && (
             <Teams 
               teamsData={teamsData} 
-              role={role} 
+              assignments={assignments}
+              currentUser={currentUser}
+            />
+          )}
+
+          {activeNav === 'Settings' && role === 'Super Admin' && (
+            <Settings 
+              teamsData={teamsData} 
+              assignments={assignments}
               handleDeleteTeam={handleDeleteTeam} 
               handleEditTeam={handleEditTeam}
+              handleAssign={handleAssign}
+              handleRemoveAssign={handleRemoveAssign}
               setIsModalUserOpen={() => {
                 setEditingUserId(null);
                 setNewUser({ name: '', role: 'Creator', status: 'Active', username: '', password: '' });
@@ -363,6 +435,7 @@ export default function App() {
             setCommentInput={setCommentInput}
             handleUpdateStatus={handleUpdateStatus}
             handlePostComment={handlePostComment}
+            handleUploadVersion={handleUploadVersion}
           />
         )}
 
@@ -373,6 +446,9 @@ export default function App() {
             handleCreateContent={handleCreateContent}
             newContent={newContent}
             setNewContent={setNewContent}
+            teamsData={teamsData}
+            assignments={assignments}
+            currentUser={currentUser}
           />
         )}
 
@@ -390,8 +466,7 @@ export default function App() {
       </main>
 
       {/* Global CSS */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        <style dangerouslySetInnerHTML={{ __html: `
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; background: #FAFBFF; color: #1e293b; }
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }

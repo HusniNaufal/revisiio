@@ -10,8 +10,12 @@ export default function ContentDetailModal({
   commentInput,
   setCommentInput,
   handleUpdateStatus,
-  handlePostComment
+  handlePostComment,
+  handleUploadVersion
 }) {
+  const isClientRole = role.toLowerCase().includes('client') || role === 'Reviewer';
+  const isCreatorRole = !isClientRole && role !== 'Super Admin';
+  const isSuperAdmin = role === 'Super Admin';
   return (
     <div className="fixed inset-0 z-[200] flex justify-end bg-slate-950/40 backdrop-blur-sm animate-in fade-in">
        <div className="w-full max-w-[1000px] bg-white h-full shadow-2xl flex flex-col md:flex-row animate-in slide-in-from-right-full duration-500 ease-out overflow-hidden">
@@ -26,16 +30,19 @@ export default function ContentDetailModal({
                    </div>
                 </div>
                 <div className="flex gap-3">
-                  {role === 'Client' && selectedContent.currentStatus === 'Review' && (
+                  {(isClientRole || isSuperAdmin) && selectedContent.currentStatus === 'Review' && (
                     <>
-                      <button onClick={() => handleUpdateStatus(selectedContent.id, 'Review', 'Revisi')} className="px-6 py-3 border border-rose-100 text-rose-500 text-[10px] font-black rounded-xl uppercase hover:bg-rose-50 transition-colors">Tolak</button>
-                      <button onClick={() => handleUpdateStatus(selectedContent.id, 'Review', 'Approved')} className="px-6 py-3 bg-slate-900 text-white text-[10px] font-black rounded-xl uppercase hover:bg-indigo-600 shadow-xl transition-all">Terima</button>
+                      <button onClick={() => handleUpdateStatus(selectedContent.id, 'Review', 'Revisi')} className="px-6 py-3 border border-rose-100 text-rose-500 text-[10px] font-black rounded-xl uppercase hover:bg-rose-50 transition-colors">Tolak (Revisi)</button>
+                      <button onClick={() => handleUpdateStatus(selectedContent.id, 'Review', 'Approved')} className="px-6 py-3 bg-slate-900 text-white text-[10px] font-black rounded-xl uppercase hover:bg-indigo-600 shadow-xl transition-all">Terima (Selesai)</button>
                     </>
                   )}
-                  {role === 'Creator' && selectedContent.currentStatus === 'Revisi' && (
-                    <button onClick={() => handleUpdateStatus(selectedContent.id, 'Revisi', 'Review')} className="px-6 py-3 bg-indigo-600 text-white text-[10px] font-black rounded-xl uppercase hover:shadow-lg transition-all">Unggah Perbaikan</button>
+                  {(isCreatorRole || isSuperAdmin) && selectedContent.currentStatus === 'Revisi' && (
+                    <button onClick={() => {
+                       const note = window.prompt("Tuliskan ringkasan perbaikan untuk versi baru ini:", "Pembaruan berdasarkan feedback.");
+                       if (note !== null) handleUploadVersion(selectedContent.id, note);
+                    }} className="px-6 py-3 bg-indigo-600 text-white text-[10px] font-black rounded-xl uppercase hover:shadow-lg transition-all">Unggah Perbaikan</button>
                   )}
-                  {role === 'Creator' && selectedContent.currentStatus === 'Draft' && (
+                  {(isCreatorRole || isSuperAdmin) && selectedContent.currentStatus === 'Draft' && (
                     <button onClick={() => handleUpdateStatus(selectedContent.id, 'Draft', 'Review')} className="px-6 py-3 bg-indigo-600 text-white text-[10px] font-black rounded-xl uppercase transition-all">Kirim Review</button>
                   )}
                 </div>
@@ -83,7 +90,7 @@ export default function ContentDetailModal({
                   selectedContent.versions.find(v => v.v === (viewingVersion || selectedContent.version))?.comments.map(c => (
                     <div key={c.id} className="space-y-3 animate-in slide-in-from-bottom-2">
                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[9px] font-black shadow-sm ${c.user === 'Client' ? 'bg-amber-100 text-amber-600' : 'bg-slate-900 text-white'}`}>{c.user.charAt(0)}</div>
+                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[9px] font-black shadow-sm ${c.user.toLowerCase().includes('client') ? 'bg-amber-100 text-amber-600' : 'bg-slate-900 text-white'}`}>{c.user.charAt(0)}</div>
                           <span className="text-[10px] font-black text-slate-700 uppercase">{c.user}</span>
                        </div>
                        <div className="bg-white p-5 rounded-[2rem] rounded-tl-none border border-slate-100 shadow-sm">
