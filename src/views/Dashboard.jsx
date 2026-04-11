@@ -33,7 +33,7 @@ export default function Dashboard({ kontenData, setSelectedContent, setActiveNav
                   .filter(x => x.status !== 'Approved')
                   .slice(0, 3)
                   .map(item => (
-                     <div key={item.id} className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow group">
+                     <div key={item.id} className="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow group">
                         <div className="flex items-center gap-6">
                            <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 font-black text-xs group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">{item.version}</div>
                            <div>
