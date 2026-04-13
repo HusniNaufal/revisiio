@@ -21,8 +21,8 @@ export default function CreateProjectModal({
    }
 
    return (
-      <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 md:p-8 bg-slate-950/70 backdrop-blur-md animate-in fade-in">
-         <div className="bg-white w-full max-w-xl rounded-[1.5rem] md:rounded-[1.5rem] p-6 md:p-12 text-left shadow-2xl animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 md:p-8 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-500" onClick={() => setIsModalCreateOpen(false)}>
+         <div className="bg-white w-full max-w-xl rounded-[1.5rem] md:rounded-[1.5rem] p-6 md:p-12 text-left shadow-2xl animate-in zoom-in-95 duration-500 ease-out max-h-[90vh] overflow-y-auto custom-scrollbar" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-start mb-10">
                <div>
                   <h3 className="text-xl font-black text-slate-900 italic tracking-tighter uppercase">Baru</h3>

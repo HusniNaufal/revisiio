@@ -20,9 +20,9 @@ export default function Workflow({ filteredData, setSelectedContent, setViewingV
                     <p className="text-[9px] font-black uppercase">Kosong</p>
                  </div>
                ) : (
-                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                 <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 pb-4 sm:pb-0 snap-x custom-scrollbar">
                  {cards.map(card => (
-                   <div key={card.id} onClick={() => { setSelectedContent({...card, currentStatus: status}); setViewingVersion(null); }} className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 hover:border-indigo-400 cursor-pointer transition-all active:scale-[0.98] group flex flex-col justify-between">
+                   <div key={card.id} onClick={() => { setSelectedContent({...card, currentStatus: status}); setViewingVersion(null); }} className="shrink-0 w-[85vw] sm:w-auto snap-center bg-white p-6 rounded-3xl shadow-sm border border-slate-100 hover:border-indigo-400 cursor-pointer transition-all active:scale-[0.98] group flex flex-col justify-between">
                       <div>
                         <div className="flex justify-between mb-4">
                            <span className="text-[9px] font-black bg-indigo-50 text-indigo-500 px-3 py-1 rounded-lg border border-indigo-100">{card.version}</span>

@@ -375,7 +375,7 @@ export default function App() {
         <div className="flex-1 overflow-y-auto p-6 md:p-12 custom-scrollbar">
           {activeNav === 'Dashboard' && (
             <Dashboard 
-              kontenData={kontenData} 
+              kontenData={filteredData} 
               setSelectedContent={setSelectedContent} 
               setActiveNav={setActiveNav} 
             />
@@ -391,7 +391,7 @@ export default function App() {
 
           {activeNav === 'Archive' && (
             <Archive 
-              kontenData={kontenData} 
+              kontenData={filteredData} 
               setSelectedContent={setSelectedContent} 
               setViewingVersion={setViewingVersion} 
             />

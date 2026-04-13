@@ -31,7 +31,7 @@ export default function Dashboard({ kontenData, setSelectedContent, setActiveNav
                {Object.entries(kontenData)
                   .flatMap(([status, items]) => items.map(i => ({ ...i, status })))
                   .filter(x => x.status !== 'Approved')
-                  .slice(0, 3)
+                  .slice(0, 10)
                   .map(item => (
                      <div key={item.id} className="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow group">
                         <div className="flex items-center gap-6">

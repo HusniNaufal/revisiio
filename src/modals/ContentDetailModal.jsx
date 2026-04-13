@@ -17,8 +17,8 @@ export default function ContentDetailModal({
   const isCreatorRole = !isClientRole && role !== 'Super Admin';
   const isSuperAdmin = role === 'Super Admin';
   return (
-    <div className="fixed inset-0 z-[200] flex justify-end bg-slate-950/40 backdrop-blur-sm animate-in fade-in">
-       <div className="w-full max-w-[1000px] bg-white h-full shadow-2xl flex flex-col md:flex-row animate-in slide-in-from-right-full duration-500 ease-out overflow-hidden">
+    <div className="fixed inset-0 z-[200] flex justify-end bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-500" onClick={() => setSelectedContent(null)}>
+       <div className="w-full max-w-[1000px] bg-white h-full shadow-2xl flex flex-col md:flex-row animate-in slide-in-from-right-full duration-500 ease-out overflow-hidden" onClick={(e) => e.stopPropagation()}>
           {/* PREVIEW PANEL */}
           <div className="flex-1 flex flex-col border-b md:border-b-0 md:border-r border-slate-100 bg-slate-50/20 overflow-hidden">
              <header className="h-20 md:h-24 px-6 md:px-10 border-b border-slate-50 flex items-center justify-between bg-white shrink-0">

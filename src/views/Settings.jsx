@@ -91,7 +91,7 @@ export default function Settings({
       <div className="bg-white rounded-[1.5rem] border border-slate-100 shadow-sm overflow-hidden">
         <div className="p-8 border-b border-slate-50 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h3 className="text-xl font-black text-slate-900 uppercase">Database Pengguna</h3>
+            <h3 className="text-xl font-black text-slate-900 uppercase">Akun Pengguna</h3>
             <p className="text-[10px] font-bold text-slate-400 mt-1">Daftar semua akun yang terdaftar dalam sistem.</p>
           </div>
           <button onClick={() => setIsModalUserOpen(true)} className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-4 rounded-2xl text-[10px] font-black flex items-center gap-3 transition-all active:scale-95">
