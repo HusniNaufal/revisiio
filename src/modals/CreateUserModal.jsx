@@ -27,7 +27,7 @@ export default function CreateUserModal({ setIsModalUserOpen, handleAddTeam, new
             <form onSubmit={handleAddTeam} className="space-y-6">
                <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Nama Lengkap</label>
-                  <input required type="text" placeholder="Contoh: Budi Santoso" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} className="w-full bg-slate-50 border-2 border-transparent focus:border-indigo-100 rounded-2xl px-6 py-4 text-xs font-bold outline-none transition-all" />
+                  <input minLength={3} required type="text" placeholder="Contoh: Budi Santoso" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} className="w-full bg-slate-50 border-2 border-transparent focus:border-indigo-100 rounded-2xl px-6 py-4 text-xs font-bold outline-none transition-all" />
                </div>
 
                <div className="grid grid-cols-2 gap-4">
@@ -43,6 +43,7 @@ export default function CreateUserModal({ setIsModalUserOpen, handleAddTeam, new
                         type="password"
                         placeholder={editMode ? '••••••' : 'min. 4 karakter'}
                         required={!editMode}
+                        minLength={4}
                         value={newUser.password || ''}
                         onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                         className="w-full bg-slate-50 border-2 border-transparent focus:border-indigo-100 rounded-2xl px-6 py-4 text-xs font-bold outline-none transition-all"
