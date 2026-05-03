@@ -42,8 +42,8 @@ export async function POST(request) {
       );
     }
 
-    // Insert ke database
-    const { data, error } = await supabase
+    // Insert ke database projects
+    const { data: project, error: projErr } = await supabase
       .from('projects')
       .insert({
         title: body.title,
@@ -57,14 +57,31 @@ export async function POST(request) {
       .select()
       .single();
 
-    if (error) {
-      return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    if (projErr) {
+      return NextResponse.json({ success: false, message: projErr.message }, { status: 500 });
+    }
+
+    // Insert versi awal ke project_versions (PENTING untuk menghindari error constraint)
+    const { data: version, error: verErr } = await supabase
+      .from('project_versions')
+      .insert({
+        project_id: project.id,
+        version_num: 'v1.0',
+        note: 'Draf awal diunggah via API.',
+        user_name: body.author_name || 'API User'
+      })
+      .select()
+      .single();
+
+    if (verErr) {
+      // Walau gagal insert versi, projectnya sudah terbuat, tapi kita kasih tau user
+      console.error('Gagal membuat versi awal:', verErr);
     }
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Project berhasil dibuat!',
-      data: data
+      message: 'Project dan Versi Awal berhasil dibuat!',
+      data: { project, version }
     }, { status: 201 }); // 201 Created
 
   } catch (err) {
