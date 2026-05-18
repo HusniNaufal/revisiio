@@ -1,7 +1,7 @@
 # Panduan Pengujian API - DFD Level 1
 *Gunakan panduan ini untuk melakukan pengujian Endpoint API di Postman.*
 
-Pastikan server lokal menyala (`npm run dev`) dan arahkan URL ke `http://localhost:3000`.
+Pastikan kamu menggunakan URL produksi yang sudah di-deploy ke `https://revisiio.vercel.app`.
 
 ---
 
@@ -9,12 +9,12 @@ Pastikan server lokal menyala (`npm run dev`) dan arahkan URL ke `http://localho
 
 ### 1A. Memeriksa Data User (Admin)
 - **Method:** `GET`
-- **URL:** `/api/auth`
+- **URL:** `https://revisiio.vercel.app/api/auth`
 - **Fungsi:** Menampilkan seluruh daftar user yang terdaftar di sistem.
 
 ### 1B. Login User
 - **Method:** `POST`
-- **URL:** `/api/auth`
+- **URL:** `https://revisiio.vercel.app/api/auth`
 - **Body (JSON):**
   ```json
   {
@@ -29,12 +29,12 @@ Pastikan server lokal menyala (`npm run dev`) dan arahkan URL ke `http://localho
 
 ### 2A. Menampilkan Daftar Konten
 - **Method:** `GET`
-- **URL:** `/api/contents`
+- **URL:** `https://revisiio.vercel.app/api/contents`
 - **Fungsi:** Mengambil semua project beserta versi terakhirnya.
 
 ### 2B. Membuat Project Baru (Auto-Create Versi 1.0)
 - **Method:** `POST`
-- **URL:** `/api/contents`
+- **URL:** `https://revisiio.vercel.app/api/contents`
 - **Body (JSON):**
   ```json
   {
@@ -52,11 +52,11 @@ Pastikan server lokal menyala (`npm run dev`) dan arahkan URL ke `http://localho
 
 ### 3A. Menampilkan Riwayat Komentar
 - **Method:** `GET`
-- **URL:** `/api/feedbacks`
+- **URL:** `https://revisiio.vercel.app/api/feedbacks`
 
 ### 3B. Menambahkan Feedback/Komentar
 - **Method:** `POST`
-- **URL:** `/api/feedbacks`
+- **URL:** `https://revisiio.vercel.app/api/feedbacks`
 - **Body (JSON):**
   ```json
   {
@@ -73,7 +73,7 @@ Pastikan server lokal menyala (`npm run dev`) dan arahkan URL ke `http://localho
 
 ### 4A. Update Status Workflow (Biasa)
 - **Method:** `PATCH`
-- **URL:** `/api/workflows`
+- **URL:** `https://revisiio.vercel.app/api/workflows`
 - **Body (JSON):**
   ```json
   {
@@ -85,7 +85,7 @@ Pastikan server lokal menyala (`npm run dev`) dan arahkan URL ke `http://localho
 
 ### 4B. Update Status (Auto-Bump Versi: Revisi -> Review)
 - **Method:** `PATCH`
-- **URL:** `/api/workflows`
+- **URL:** `https://revisiio.vercel.app/api/workflows`
 - **Body (JSON):**
   ```json
   {
@@ -102,5 +102,5 @@ Pastikan server lokal menyala (`npm run dev`) dan arahkan URL ke `http://localho
 
 ### 5A. Generate Notifikasi Deadline
 - **Method:** `GET`
-- **URL:** `/api/notifications`
+- **URL:** `https://revisiio.vercel.app/api/notifications`
 - **Fungsi:** Mengambil semua project yang belum *Approved*. Jika tanggal *deadline* sudah lewat dari hari ini, notifikasi otomatis dilabeli `URGENT` dengan pesan `DEADLINE TERLEWATI`. Jika belum lewat, dilabeli `REMINDER`.

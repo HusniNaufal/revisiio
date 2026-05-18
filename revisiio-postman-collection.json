@@ -1,0 +1,255 @@
+{
+	"info": {
+		"name": "Revisi.io - DFD Level 1 API Testing (Vercel)",
+		"description": "Kumpulan API Endpoint untuk menguji alur kerja berdasarkan DFD Level 1 di aplikasi Revisi.io (Production)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "P1 (1.0 Auth & User Management)",
+			"item": [
+				{
+					"name": "1A. Get All Users",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "https://revisiio.vercel.app/api/auth",
+							"protocol": "https",
+							"host": [
+								"revisiio",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth"
+							]
+						}
+					}
+				},
+				{
+					"name": "1B. Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"husni\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "https://revisiio.vercel.app/api/auth",
+							"protocol": "https",
+							"host": [
+								"revisiio",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "P2 (2.0 Manajemen Konten & Versi)",
+			"item": [
+				{
+					"name": "2A. Menampilkan Daftar Konten",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "https://revisiio.vercel.app/api/contents",
+							"protocol": "https",
+							"host": [
+								"revisiio",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"contents"
+							]
+						}
+					}
+				},
+				{
+					"name": "2B. Membuat Project Baru",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Desain Banner Ramadhan\",\n    \"type\": \"design\",\n    \"priority\": \"High\",\n    \"author_name\": \"Akmal Okhi\"\n}"
+						},
+						"url": {
+							"raw": "https://revisiio.vercel.app/api/contents",
+							"protocol": "https",
+							"host": [
+								"revisiio",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"contents"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "P3 (3.0 Review & Feedback)",
+			"item": [
+				{
+					"name": "3A. Menampilkan Riwayat Komentar",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "https://revisiio.vercel.app/api/feedbacks",
+							"protocol": "https",
+							"host": [
+								"revisiio",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"feedbacks"
+							]
+						}
+					}
+				},
+				{
+					"name": "3B. Menambahkan Feedback/Komentar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"project_id\": \"MASUKKAN_PROJECT_ID_DISINI\",\n    \"user_name\": \"Dosen Reviewer\",\n    \"text\": \"Warna background kurang terang, tolong diubah.\"\n}"
+						},
+						"url": {
+							"raw": "https://revisiio.vercel.app/api/feedbacks",
+							"protocol": "https",
+							"host": [
+								"revisiio",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"feedbacks"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "P4 (4.0 Workflow & Status Update)",
+			"item": [
+				{
+					"name": "4A. Update Status Biasa",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"project_id\": \"MASUKKAN_PROJECT_ID_DISINI\",\n    \"new_status\": \"Revisi\",\n    \"user_name\": \"Dosen Reviewer\"\n}"
+						},
+						"url": {
+							"raw": "https://revisiio.vercel.app/api/workflows",
+							"protocol": "https",
+							"host": [
+								"revisiio",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"workflows"
+							]
+						}
+					}
+				},
+				{
+					"name": "4B. Update Status (Auto-Bump Versi)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"project_id\": \"MASUKKAN_PROJECT_ID_DISINI\",\n    \"new_status\": \"Review\",\n    \"user_name\": \"Akmal Okhi\"\n}"
+						},
+						"url": {
+							"raw": "https://revisiio.vercel.app/api/workflows",
+							"protocol": "https",
+							"host": [
+								"revisiio",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"workflows"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "P5 (5.0 Notification & Reminder)",
+			"item": [
+				{
+					"name": "5A. Generate Notifikasi Deadline",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "https://revisiio.vercel.app/api/notifications",
+							"protocol": "https",
+							"host": [
+								"revisiio",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"notifications"
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}

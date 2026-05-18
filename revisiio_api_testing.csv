@@ -1,0 +1,15 @@
+Sequence Diagram,Method,Status Progress,Due Date,URL Test,hasil uji coba,Bukti Uji Coba
+P1 (1.0 Auth & User Management),,,,,,
+Get All Users,GET,Done,04/05/2026,https://revisiio.vercel.app/api/auth,200 OK Menampilkan seluruh daftar user,Get All Users.png
+Login User,POST,Done,04/05/2026,https://revisiio.vercel.app/api/auth,200 OK Berhasil Login & memvalidasi user,Login User.png
+P2 (2.0 Manajemen Konten & Versi),,,,,,
+Menampilkan Daftar Konten,GET,Done,04/05/2026,https://revisiio.vercel.app/api/contents,200 OK Berhasil menampilkan daftar project,Daftar Konten.png
+Membuat Project Baru,POST,Done,04/05/2026,https://revisiio.vercel.app/api/contents,201 Created Project & Versi Awal berhasil dibuat,Tambah Project.png
+P3 (3.0 Review & Feedback),,,,,,
+Menampilkan Riwayat Komentar,GET,Done,04/05/2026,https://revisiio.vercel.app/api/feedbacks,200 OK Berhasil menampilkan riwayat komentar,Riwayat Komentar.png
+Menambahkan Feedback/Komentar,POST,Done,04/05/2026,https://revisiio.vercel.app/api/feedbacks,201 Created Komentar berhasil disimpan di database,Tambah Komentar.png
+P4 (4.0 Workflow & Status Update),,,,,,
+Update Status Biasa,PATCH,Done,04/05/2026,https://revisiio.vercel.app/api/workflows,200 OK Status project berhasil diubah,Update Status.png
+Update Status (Auto-Bump Versi),PATCH,Done,04/05/2026,https://revisiio.vercel.app/api/workflows,200 OK Status diupdate dan Versi naik otomatis,Status Auto Bump.png
+P5 (5.0 Notification & Reminder),,,,,,
+Generate Notifikasi Deadline,GET,Done,04/05/2026,https://revisiio.vercel.app/api/notifications,200 OK Berhasil men-generate data notifikasi,Notifikasi Deadline.png
