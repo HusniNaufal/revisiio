@@ -1,11 +1,11 @@
 "use client";
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { 
-  CheckCircle2, 
-  LayoutDashboard, 
-  LogOut, 
-  Plus, 
-  Layers, 
+import {
+  CheckCircle2,
+  LayoutDashboard,
+  LogOut,
+  Plus,
+  Layers,
   Search,
   Users,
   Settings as SettingsIcon,
@@ -51,7 +51,7 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeNav, setActiveNav] = useState('Dashboard');
   const [selectedContent, setSelectedContent] = useState(null);
-  
+
   const [kontenData, setKontenData] = useState({ Draft: [], Review: [], Revisi: [], Approved: [] });
   const [teamsData, setTeamsData] = useState([]);
   const [assignments, setAssignments] = useState([]);
@@ -60,10 +60,10 @@ export default function App() {
   const [notifications, setNotifications] = useState([]);
   const [commentInput, setCommentInput] = useState("");
   const [viewingVersion, setViewingVersion] = useState(null);
-  
+
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
   const [newContent, setNewContent] = useState({ title: '', type: 'doc', deadline: '', priority: 'Medium', clientId: '' });
-  
+
   const [isModalUserOpen, setIsModalUserOpen] = useState(false);
   const [newUser, setNewUser] = useState({ name: '', role: 'Creator', status: 'Active', username: '', password: '' });
   const [editingUserId, setEditingUserId] = useState(null);
@@ -175,9 +175,9 @@ export default function App() {
 
   const handlePostComment = async () => {
     if (!commentInput.trim() || !selectedContent) return;
-    
+
     const targetVersionStr = viewingVersion || selectedContent.version;
-    
+
     const result = await postComment(
       selectedContent.id,
       targetVersionStr,
@@ -234,7 +234,7 @@ export default function App() {
   const handleDeleteTeam = async (idx) => {
     const member = teamsData[idx];
     if (!member?.id) return;
-    
+
     const success = await deleteTeamMember(member.id);
     if (success) {
       await refreshTeams();
@@ -263,7 +263,7 @@ export default function App() {
   const filteredData = useMemo(() => {
     const result = {};
     Object.keys(kontenData).forEach(key => {
-      result[key] = kontenData[key].filter(item => 
+      result[key] = kontenData[key].filter(item =>
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.author.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -278,13 +278,13 @@ export default function App() {
 
   return (
     <div className="flex h-screen w-full bg-[#FAFBFF] font-sans overflow-hidden">
-      
+
       {/* NOTIFICATIONS UI */}
       <div className="fixed top-8 right-8 z-[300] space-y-4 pointer-events-none">
         {notifications.map(n => (
           <div key={n.id} className="bg-white border border-slate-100 shadow-2xl p-6 rounded-[2rem] flex items-center gap-4 animate-in slide-in-from-right-10 pointer-events-auto">
-             <div className="w-3 h-3 bg-indigo-500 rounded-full animate-pulse shadow-lg shadow-indigo-200"></div>
-             <p className="text-[11px] font-black text-slate-700 uppercase tracking-tight">{n.msg}</p>
+            <div className="w-3 h-3 bg-indigo-500 rounded-full animate-pulse shadow-lg shadow-indigo-200"></div>
+            <p className="text-[11px] font-black text-slate-700 uppercase tracking-tight">{n.msg}</p>
           </div>
         ))}
       </div>
@@ -292,18 +292,15 @@ export default function App() {
       {/* SIDEBAR NAVIGATION */}
       {/* Overlay Backdrop for Mobile */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-[150] bg-slate-900/50 backdrop-blur-sm lg:hidden animate-in fade-in"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
       <aside className={`fixed inset-y-0 left-0 z-[200] w-80 bg-white border-r border-slate-100 flex flex-col transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-10 flex-1 flex flex-col">
-          <div className="flex items-center gap-4 mb-16 px-2 cursor-pointer" onClick={() => setActiveNav('Dashboard')}>
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-xl shadow-indigo-100 transition-transform active:scale-90">
-              <CheckCircle2 size={20} className="text-white" />
-            </div>
-            <span className="text-xl font-black tracking-tighter italic uppercase text-slate-900">revisi.io</span>
+          <div className="flex items-center justify-center w-full pe-6 mb-4 cursor-pointer" onClick={() => setActiveNav('Dashboard')}>
+            <img src="/logo-transparent.png" alt="Revisi.io Logo" className="h-18 w-auto object-contain transition-transform active:scale-90" />
           </div>
 
           <nav className="space-y-2 flex-1">
@@ -314,9 +311,9 @@ export default function App() {
           </nav>
 
           <div className="pt-10 border-t border-slate-50 space-y-2">
-             {role === 'Super Admin' && (
-               <SidebarLink icon={<SettingsIcon size={18} />} label="Pengaturan" active={activeNav === 'Settings'} onClick={() => setActiveNav('Settings')} />
-             )}
+            {role === 'Super Admin' && (
+              <SidebarLink icon={<SettingsIcon size={18} />} label="Pengaturan" active={activeNav === 'Settings'} onClick={() => setActiveNav('Settings')} />
+            )}
           </div>
         </div>
 
@@ -339,77 +336,77 @@ export default function App() {
       {/* MAIN VIEWPORT */}
       <main className="flex-1 flex flex-col overflow-hidden relative">
         <header className="h-20 md:h-24 px-6 md:px-12 flex items-center justify-between border-b border-slate-50 shrink-0 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-           <div className="flex items-center gap-4 md:gap-6 text-left">
-             <button 
-               onClick={() => setIsMobileMenuOpen(true)} 
-               className="lg:hidden p-2 -ml-2 text-slate-400 hover:text-slate-900 transition-colors"
-             >
-               <Menu size={24} />
-             </button>
-             <div className="flex flex-col">
-               <h2 className="text-lg md:text-xl font-black text-slate-900 uppercase tracking-tight">{activeNav}</h2>
-               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 hidden md:block">Operational Environment</p>
-             </div>
-           </div>
-           
-           <div className="flex items-center gap-3 md:gap-6">
-              <div className="relative group hidden lg:block">
-                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors" size={14} />
-                 <input 
-                   type="text" 
-                   placeholder="Cari draf atau aset..." 
-                   value={searchQuery}
-                   onChange={(e) => setSearchQuery(e.target.value)}
-                   className="bg-slate-50 border border-slate-100 rounded-2xl py-3 pl-12 pr-6 text-[11px] font-bold outline-none focus:bg-white focus:border-indigo-100 w-64 transition-all"
-                 />
-              </div>
+          <div className="flex items-center gap-4 md:gap-6 text-left">
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="lg:hidden p-2 -ml-2 text-slate-400 hover:text-slate-900 transition-colors"
+            >
+              <Menu size={24} />
+            </button>
+            <div className="flex flex-col">
+              <h2 className="text-lg md:text-xl font-black text-slate-900 uppercase tracking-tight">{activeNav}</h2>
+              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 hidden md:block">Operational Environment</p>
+            </div>
+          </div>
 
-              {((!role.toLowerCase().includes('client') && role !== 'Reviewer') || role === 'Super Admin') && (
-                <button onClick={() => setIsModalCreateOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 md:px-8 md:py-4 rounded-2xl text-[10px] font-black flex items-center gap-2 md:gap-3 transition-all shadow-xl shadow-indigo-100 active:scale-95">
-                  <Plus size={16} strokeWidth={3} /> <span className="hidden md:inline">UNGGAH BARU</span><span className="md:hidden">BARU</span>
-                </button>
-              )}
-           </div>
+          <div className="flex items-center gap-3 md:gap-6">
+            <div className="relative group hidden lg:block">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors" size={14} />
+              <input
+                type="text"
+                placeholder="Cari draf atau aset..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-slate-50 border border-slate-100 rounded-2xl py-3 pl-12 pr-6 text-[11px] font-bold outline-none focus:bg-white focus:border-indigo-100 w-64 transition-all"
+              />
+            </div>
+
+            {((!role.toLowerCase().includes('client') && role !== 'Reviewer') || role === 'Super Admin') && (
+              <button onClick={() => setIsModalCreateOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 md:px-8 md:py-4 rounded-2xl text-[10px] font-black flex items-center gap-2 md:gap-3 transition-all shadow-xl shadow-indigo-100 active:scale-95">
+                <Plus size={16} strokeWidth={3} /> <span className="hidden md:inline">UNGGAH BARU</span><span className="md:hidden">BARU</span>
+              </button>
+            )}
+          </div>
         </header>
 
         <div className="flex-1 overflow-y-auto p-6 md:p-12 custom-scrollbar">
           {activeNav === 'Dashboard' && (
-            <Dashboard 
-              kontenData={filteredData} 
-              setSelectedContent={setSelectedContent} 
-              setActiveNav={setActiveNav} 
+            <Dashboard
+              kontenData={filteredData}
+              setSelectedContent={setSelectedContent}
+              setActiveNav={setActiveNav}
             />
           )}
 
           {activeNav === 'Workflow' && (
-            <Workflow 
-              filteredData={filteredData} 
-              setSelectedContent={setSelectedContent} 
-              setViewingVersion={setViewingVersion} 
+            <Workflow
+              filteredData={filteredData}
+              setSelectedContent={setSelectedContent}
+              setViewingVersion={setViewingVersion}
             />
           )}
 
           {activeNav === 'Archive' && (
-            <Archive 
-              kontenData={filteredData} 
-              setSelectedContent={setSelectedContent} 
-              setViewingVersion={setViewingVersion} 
+            <Archive
+              kontenData={filteredData}
+              setSelectedContent={setSelectedContent}
+              setViewingVersion={setViewingVersion}
             />
           )}
 
           {activeNav === 'Teams' && (
-            <Teams 
-              teamsData={teamsData} 
+            <Teams
+              teamsData={teamsData}
               assignments={assignments}
               currentUser={currentUser}
             />
           )}
 
           {activeNav === 'Settings' && role === 'Super Admin' && (
-            <Settings 
-              teamsData={teamsData} 
+            <Settings
+              teamsData={teamsData}
               assignments={assignments}
-              handleDeleteTeam={handleDeleteTeam} 
+              handleDeleteTeam={handleDeleteTeam}
               handleEditTeam={handleEditTeam}
               handleAssign={handleAssign}
               handleRemoveAssign={handleRemoveAssign}
@@ -425,7 +422,7 @@ export default function App() {
 
         {/* MODAL: DETAIL & FEEDBACK OVERLAY */}
         {selectedContent && (
-          <ContentDetailModal 
+          <ContentDetailModal
             selectedContent={selectedContent}
             setSelectedContent={setSelectedContent}
             role={role}
@@ -441,7 +438,7 @@ export default function App() {
 
         {/* MODAL: CREATE PROJECT */}
         {isModalCreateOpen && (
-          <CreateProjectModal 
+          <CreateProjectModal
             setIsModalCreateOpen={setIsModalCreateOpen}
             handleCreateContent={handleCreateContent}
             newContent={newContent}
@@ -466,7 +463,8 @@ export default function App() {
       </main>
 
       {/* Global CSS */}
-        <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; background: #FAFBFF; color: #1e293b; }
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
