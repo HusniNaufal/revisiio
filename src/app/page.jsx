@@ -280,7 +280,7 @@ export default function App() {
     <div className="flex h-screen w-full bg-[#FAFBFF] font-sans overflow-hidden">
 
       {/* NOTIFICATIONS UI */}
-      <div className="fixed top-8 right-8 z-[300] space-y-4 pointer-events-none">
+      <div className="fixed bottom-8 right-8 z-[300] space-y-4 pointer-events-none">
         {notifications.map(n => (
           <div key={n.id} className="bg-white border border-slate-100 shadow-2xl p-6 rounded-[2rem] flex items-center gap-4 animate-in slide-in-from-right-10 pointer-events-auto">
             <div className="w-3 h-3 bg-indigo-500 rounded-full animate-pulse shadow-lg shadow-indigo-200"></div>

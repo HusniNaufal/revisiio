@@ -1,83 +1,62 @@
-# revisi.io
+# 🚀 Tugas Besar: revisi.io
 
-Platform manajemen konten dan approval profesional untuk tim kreatif. Dibangun dengan Next.js dan Supabase.
+> **Dosen Pengampu:** Muhammad Shiddiq Azis, S.T., MBA
 
-## ✨ Fitur Utama
+---
 
-- **Multi-Role Login** — Super Admin, Creative Lead, Lead Designer, Video Editor, Client, dan Reviewer dengan hak akses berbeda
-- **Pipeline Workflow** — Alur status konten: Draft → Review → Revisi → Approved
-- **Auto Versioning** — Versi konten otomatis naik saat revisi disetujui (v1.0 → v1.1 → v2.0)
-- **Sistem Komentar** — Feedback per versi konten dari Client/Reviewer
-- **Manajemen Tim** — Super Admin dapat menambah, mengedit, dan menghapus pengguna
-- **Alokasi Tim Klien** — Super Admin dapat menugaskan Creative team kepada masing-masing klien (multi-client architecture)
-- **Dashboard Analytics** — Statistik progress konten secara real-time
-- **Archive** — Riwayat seluruh konten yang sudah diproses
-- **Responsive** — Tampilan mobile-friendly dengan sidebar collapsible
+## 📊 Perancangan Sistem (DFD)
 
-## 🛠️ Tech Stack
+### ERD Diagram
+![ERD Diagram](diagram/ERD%20Kelompok_8.png)
 
-| Layer | Teknologi |
-|---|---|
-| Frontend & Backend | [Next.js 15](https://nextjs.org/) (App Router + Turbopack) |
-| Database | [Supabase](https://supabase.com/) (PostgreSQL) |
-| Styling | [Tailwind CSS](https://tailwindcss.com/) |
-| Icons | [Lucide React](https://lucide.dev/) |
-| Deployment | [Vercel](https://vercel.com/) |
+### DFD Level 0
+![DFD Level 0](diagram/DFD%20Level%200%20Kelompok_8.png)
 
-## 🚀 Cara Menjalankan Secara Lokal
+Pada diagram ini menunjukkan gambaran besar interaksi antara sistem revisi.io dengan berbagai entitas yaitu Admin, tim kreatif (Creative Lead, Lead Designer, Video Editor), dan Client. Pengguna dapat melakukan proses login multi-role, mengelola proyek, serta memberikan feedback pada konten. Sistem merespons dengan menampilkan status workflow, notifikasi komentar otomatis, manajemen versi konten (auto-versioning), dan rekapan analitik pada dashboard.
 
-### 1. Clone repository
+### DFD Level 1
+![DFD Level 1](diagram/DFD%20Level%201%20Kelompok_8.png)
 
-```bash
-git clone https://github.com/HusniNaufal/revisiio.git
-cd revisiio
-```
+Pada diagram ini, sistem diuraikan menjadi beberapa proses utama yaitu:
+- **Proses Login & Autentikasi** untuk mengelola akses pengguna sesuai role.
+- **Manajemen Tim & Klien** oleh Super Admin untuk mengatur alokasi tim.
+- **Pipeline Workflow** untuk memproses status konten dari Draft → Review → Revisi → Approved.
+- **Auto Versioning** yang mengatur kenaikan versi secara otomatis saat revisi disetujui.
+- **Sistem Komentar** di mana klien dapat memberikan feedback pada masing-masing versi konten.
+- **Laporan Dashboard** yang menampilkan statistik dan progress dari project secara real-time.
 
-### 2. Install dependencies
+---
 
-```bash
-npm install
-```
+## 🎨 Mockup Antarmuka
+Rancangan UI aplikasi yang berfokus pada pengalaman pengguna.
 
-### 3. Setup environment variables
+| Login Page | Dashboard | Core Feature |
+| :---: | :---: | :---: |
+| ![Login](diagram/login-page.png) | ![Dash](diagram/dashboard-page.png) | ![Feature](diagram/core-feature.png) |
 
-Buat file `.env.local` di root project:
+*(Catatan: Silakan sesuaikan tautan gambar mockup di atas dengan gambar UI aplikasi Anda jika sudah tersedia)*
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+---
 
-> Dapatkan nilai di atas dari **Supabase Dashboard → Settings → API Keys**
+## 🛠️ Stack Teknologi
+- **Frontend:** Next.js 15, Tailwind CSS, Lucide React
+- **Backend:** Next.js (App Router, Server Actions)
+- **Database:** Supabase (PostgreSQL)
 
-### 4. Setup database
+---
 
-- Buka **Supabase Dashboard → SQL Editor**
-- Copy dan jalankan isi file `schema_supabase.sql` (schema awal)
-- Jika melakukan upgrade dari versi lama, jalankan juga `migration_v2.sql`
-- Schema akan membuat tabel dan data awal secara otomatis
+## 📂 Cara Instalasi
+1. `git clone https://github.com/HusniNaufal/revisiio.git`
+2. `cd revisiio`
+3. `npm install`
+4. Setup environment variables dengan membuat file `.env.local` berisi `NEXT_PUBLIC_SUPABASE_URL` dan `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+5. Setup database dengan mengeksekusi file `schema_supabase.sql` dilanjutkan dengan `migration_v2.sql` di SQL Editor Supabase.
+6. `npm run dev`
 
-### 5. Jalankan dev server
+---
 
-```bash
-npm run dev
-```
-
-Buka [http://localhost:3000](http://localhost:3000) di browser.
-
-> Dev server menggunakan **Turbopack** untuk hot reload yang lebih cepat.
-
-## 🗄️ Struktur Database
-
-```
-users            → Data pengguna & kredensial login
-projects         → Data konten/project
-project_versions → Riwayat versi per project
-comments         → Feedback/komentar per versi
-client_teams     → Mapping penugasan CC ke klien (multi-client)
-```
-
-## 👤 Akun Default (Setelah Menjalankan Schema)
+## 👤 Akun Default (Info Login)
+Data akun berikut otomatis tersedia setelah Anda mengeksekusi file setup database di atas.
 
 | Username | Password | Role |
 |---|---|---|
@@ -89,38 +68,4 @@ client_teams     → Mapping penugasan CC ke klien (multi-client)
 | `husni` | `husni123` | Client / Reviewer |
 | `febri` | `febri123` | Client / Reviewer |
 
-> ⚠️ Ganti password akun setelah pertama kali masuk (melalui halaman Pengaturan)
-
-## 📁 Struktur Project
-
-```
-revisiio/
-├── src/
-│   ├── app/                  # Next.js App Router
-│   │   ├── layout.jsx        # Root layout (termasuk Google Fonts)
-│   │   ├── page.jsx          # Halaman utama (state & logic)
-│   │   └── globals.css       # Global CSS
-│   ├── components/           # Komponen reusable
-│   ├── views/                # Halaman: Dashboard, Workflow, Archive, Teams, Settings, Login
-│   ├── modals/               # Modal: Create Project, Detail, Create User
-│   ├── lib/
-│   │   ├── supabase.js       # Inisialisasi Supabase client
-│   │   └── supabaseHelpers.js # Fungsi CRUD ke Supabase
-│   └── data/
-│       └── constants.js      # Data dummy (tidak aktif)
-├── schema_supabase.sql        # Script SQL setup database awal
-├── migration_v2.sql           # Script SQL untuk upgrade ke versi 2 (tambah tabel client_teams)
-├── next.config.mjs
-└── tailwind.config.js
-```
-
-## 🌐 Deploy
-
-Project ini di-deploy menggunakan **Vercel**. Setiap push ke branch `main` akan otomatis trigger deployment baru.
-
-Pastikan menambahkan Environment Variables di **Vercel Dashboard → Project → Settings → Environment Variables**.
-
-## 📄 Lisensi
-
-Dibuat untuk keperluan mata kuliah **IMPAL** — Semester 4.
-
+> ⚠️ **Catatan:** Jangan lupa mengganti password akun setelah pertama kali masuk melalui halaman Pengaturan demi keamanan.
