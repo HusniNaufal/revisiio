@@ -27,7 +27,7 @@ export default function Login({ handleLogin }) {
     <div className="h-screen w-full flex items-center justify-center bg-[#ffffff] font-sans overflow-hidden px-6">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(79,70,229,0.1),transparent_50%)]"></div>
       <div className="w-full max-w-md bg-white/[0.02] backdrop-blur-3xl border border-white/10 rounded-[1.5rem] px-6 py-8 md:p-12 shadow-2xl text-center relative z-10 animate-in fade-in zoom-in duration-500">
-        <img src="/logo.png" alt="Revisi.io Logo" className="h-50 w-auto object-contain mx-auto mb-16 md:mb-12 transition-transform hover:scale-105" />
+        <img src="/logo.png" alt="Revisi.io Logo" className="h-30 w-auto object-contain mx-auto mb-16 md:mb-12 transition-transform hover:scale-105" />
         {/* <p className="text-slate-400 text-sm mb-12">Manajemen Konten & Approval Professional</p> */}
 
         <form onSubmit={onSubmit} className="space-y-4">
