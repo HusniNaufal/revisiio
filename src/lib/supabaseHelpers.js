@@ -241,9 +241,25 @@ export async function updateProjectStatus(projectId, currentStatus, newStatus, u
 }
 
 // =============================================
+// UPDATE TITLE: Ubah nama project
+// =============================================
+export async function updateProjectTitle(projectId, newTitle) {
+  const { error } = await supabase
+    .from('projects')
+    .update({ title: newTitle, updated_at: new Date().toISOString() })
+    .eq('id', projectId);
+
+  if (error) {
+    console.error('Error updating title:', error);
+    return false;
+  }
+  return true;
+}
+
+// =============================================
 // UPLOAD NEW VERSION (CC menangani project Revisi)
 // =============================================
-export async function uploadNewVersion(projectId, userRole, note = "Pembaruan berdasarkan feedback revisi.") {
+export async function uploadNewVersion(projectId, userRole, note = "Pembaruan berdasarkan feedback revisi.", targetStatus = 'Review') {
   // Ambil current version
   const { data: proj } = await supabase
     .from('projects')
@@ -257,10 +273,10 @@ export async function uploadNewVersion(projectId, userRole, note = "Pembaruan be
   const currentVerNum = parseFloat(proj.current_version.replace('v', ''));
   const newVer = `v${(Math.floor(currentVerNum) + 1).toFixed(1)}`; // Bumps 1.x -> 2.0 -> 3.0
 
-  // Update project version & pindahkan balik ke Review
+  // Update project version & pindahkan status
   await supabase
     .from('projects')
-    .update({ current_version: newVer, status: 'Review', updated_at: new Date().toISOString() })
+    .update({ current_version: newVer, status: targetStatus, updated_at: new Date().toISOString() })
     .eq('id', projectId);
 
   // Insert new version record

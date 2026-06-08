@@ -26,7 +26,8 @@ import {
   deleteTeamMember,
   fetchAssignments,
   assignTeamMember,
-  removeTeamAssignment
+  removeTeamAssignment,
+  updateProjectTitle
 } from '../lib/supabaseHelpers';
 
 // Components
@@ -179,12 +180,26 @@ export default function App() {
     }
   };
 
-  const handleUploadVersion = async (contentId, note) => {
-    const success = await uploadNewVersion(contentId, role, note);
+  const handleEditTitle = async (contentId, newTitle) => {
+    const success = await updateProjectTitle(contentId, newTitle);
     if (success) {
       await refreshKonten();
-      setSelectedContent(null);
-      setViewingVersion(null);
+      setSelectedContent(prev => ({ ...prev, title: newTitle }));
+      notify('Judul project berhasil diubah.');
+    }
+  };
+
+  const handleUploadVersion = async (contentId, note, targetStatus = 'Review') => {
+    const success = await uploadNewVersion(contentId, role, note, targetStatus);
+    if (success) {
+      await refreshKonten();
+      if (targetStatus === 'Review') {
+        setSelectedContent(null);
+        setViewingVersion(null);
+      } else {
+        // If we kept it in Draft, update local state or just close modal
+        // We'll close the modal for simplicity to force a refresh on next click, or just rely on refreshKonten
+      }
       notify('Versi baru berhasil diunggah.');
     }
   };
@@ -468,6 +483,7 @@ export default function App() {
             handleUpdateStatus={handleUpdateStatus}
             handlePostComment={handlePostComment}
             handleUploadVersion={handleUploadVersion}
+            handleEditTitle={handleEditTitle}
             teamsData={teamsData}
           />
         )}

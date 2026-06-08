@@ -12,6 +12,7 @@ export default function ContentDetailModal({
   handleUpdateStatus,
   handlePostComment,
   handleUploadVersion,
+  handleEditTitle,
   teamsData
 }) {
   const isClientRole = role.toLowerCase().includes('client') || role === 'Reviewer';
@@ -44,7 +45,19 @@ export default function ContentDetailModal({
                     }} className="px-6 py-3 bg-indigo-600 text-white text-[10px] font-black rounded-xl uppercase hover:shadow-lg transition-all">Unggah Perbaikan</button>
                   )}
                   {(isCreatorRole || isSuperAdmin) && selectedContent.currentStatus === 'Draft' && (
-                    <button onClick={() => handleUpdateStatus(selectedContent.id, 'Draft', 'Review')} className="px-6 py-3 bg-indigo-600 text-white text-[10px] font-black rounded-xl uppercase transition-all">Kirim Review</button>
+                    <>
+                      <button onClick={() => {
+                         const newTitle = window.prompt("Ubah nama projek:", selectedContent.title);
+                         if (newTitle && newTitle.trim() !== "") handleEditTitle(selectedContent.id, newTitle);
+                      }} className="px-6 py-3 border border-indigo-100 text-indigo-500 text-[10px] font-black rounded-xl uppercase hover:bg-indigo-50 transition-colors">Edit Nama</button>
+
+                      <button onClick={() => {
+                         const note = window.prompt("Tuliskan ringkasan pembaruan untuk versi ini:", "Pembaruan isi draft.");
+                         if (note !== null) handleUploadVersion(selectedContent.id, note, 'Draft');
+                      }} className="px-6 py-3 bg-slate-900 text-white text-[10px] font-black rounded-xl uppercase hover:shadow-lg transition-all">Update Isi</button>
+
+                      <button onClick={() => handleUpdateStatus(selectedContent.id, 'Draft', 'Review')} className="px-6 py-3 bg-indigo-600 text-white text-[10px] font-black rounded-xl uppercase transition-all">Kirim Review</button>
+                    </>
                   )}
                 </div>
              </header>
