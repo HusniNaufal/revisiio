@@ -197,7 +197,7 @@ export default function App() {
     const result = await postComment(
       selectedContent.id,
       targetVersionStr,
-      role,
+      currentUser.name,
       commentInput
     );
 
@@ -468,6 +468,7 @@ export default function App() {
             handleUpdateStatus={handleUpdateStatus}
             handlePostComment={handlePostComment}
             handleUploadVersion={handleUploadVersion}
+            teamsData={teamsData}
           />
         )}
 

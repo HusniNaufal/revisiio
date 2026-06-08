@@ -11,7 +11,8 @@ export default function ContentDetailModal({
   setCommentInput,
   handleUpdateStatus,
   handlePostComment,
-  handleUploadVersion
+  handleUploadVersion,
+  teamsData
 }) {
   const isClientRole = role.toLowerCase().includes('client') || role === 'Reviewer';
   const isCreatorRole = !isClientRole && role !== 'Super Admin';
@@ -87,17 +88,20 @@ export default function ContentDetailModal({
                      <p className="text-[10px] font-black uppercase tracking-widest">Belum ada diskusi</p>
                   </div>
                 ) : (
-                  selectedContent.versions.find(v => v.v === (viewingVersion || selectedContent.version))?.comments.map(c => (
+                  selectedContent.versions.find(v => v.v === (viewingVersion || selectedContent.version))?.comments.map(c => {
+                    const commentUser = teamsData?.find(u => u.name === c.user);
+                    const isClient = commentUser ? commentUser.role.toLowerCase().includes('client') : c.user.toLowerCase().includes('client');
+                    return (
                     <div key={c.id} className="space-y-3 animate-in slide-in-from-bottom-2">
                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[9px] font-black shadow-sm ${c.user.toLowerCase().includes('client') ? 'bg-amber-100 text-amber-600' : 'bg-slate-900 text-white'}`}>{c.user.charAt(0)}</div>
+                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[9px] font-black shadow-sm ${isClient ? 'bg-amber-100 text-amber-600' : 'bg-slate-900 text-white'}`}>{c.user.charAt(0)}</div>
                           <span className="text-[10px] font-black text-slate-700 uppercase">{c.user}</span>
                        </div>
                        <div className="bg-white p-5 rounded-[2rem] rounded-tl-none border border-slate-100 shadow-sm">
                           <p className="text-[11px] font-bold text-slate-500 italic leading-relaxed">"{c.text}"</p>
                        </div>
                     </div>
-                  ))
+                  )})
                 )}
              </div>
 
