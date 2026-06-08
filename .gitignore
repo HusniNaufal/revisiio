@@ -25,3 +25,8 @@ migration_add_login.sql
 *.njsproj
 *.sln
 *.sw?
+
+# File simulasi & testing tugas IMPAL
+__tests__/
+jest.config.mjs
+src/lib/ProjectVersionEntity.js

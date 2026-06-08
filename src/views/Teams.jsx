@@ -11,7 +11,7 @@ export default function Teams({ teamsData, assignments, currentUser }) {
   } else if (currentUser.role.toLowerCase().includes('client')) {
     // Client sees themselves and all CCs assigned to them
     const assignedIds = assignments.filter(a => a.client_id === currentUser.id).map(a => a.cc_id);
-    visibleUsers = teamsData.filter(u => u.id === currentUser.id || assignedIds.includes(u.id));
+    visibleUsers = teamsData.filter(u => u.id === currentUser.id || (assignedIds.includes(u.id) && !u.role.toLowerCase().includes('client')));
   } else {
     // CC sees themselves, their assigned Clients, and fellow CCs for those clients
     const clientIds = assignments.filter(a => a.cc_id === currentUser.id).map(a => a.client_id);
@@ -19,7 +19,13 @@ export default function Teams({ teamsData, assignments, currentUser }) {
     
     // Merge unique IDs
     const allVisibleIds = [...new Set([...clientIds, ...fellowCCIds, currentUser.id])];
-    visibleUsers = teamsData.filter(u => allVisibleIds.includes(u.id));
+    visibleUsers = teamsData.filter(u => {
+      if (!allVisibleIds.includes(u.id)) return false;
+      if (u.id === currentUser.id) return true;
+      if (clientIds.includes(u.id) && u.role.toLowerCase().includes('client')) return true;
+      if (fellowCCIds.includes(u.id) && !u.role.toLowerCase().includes('client')) return true;
+      return false;
+    });
   }
 
   return (

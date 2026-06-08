@@ -25,6 +25,7 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "^15.1.0",
     "eslint-plugin-react-hooks": "^5.0.0",
-    "globals": "^17.4.0"
+    "globals": "^17.4.0",
+    "jest": "^30.4.2"
   }
 }
