@@ -118,10 +118,26 @@ export default function App() {
     }
   }, [isLoggedIn, currentUser, refreshData]);
 
+  // Load user session on mount
+  useEffect(() => {
+    const savedUser = localStorage.getItem('revisiio_user');
+    if (savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setCurrentUser(userData);
+        setRole(userData.role);
+        setIsLoggedIn(true);
+      } catch (e) {
+        console.error("Invalid session data");
+      }
+    }
+  }, []);
+
   const handleLogin = (userData) => {
     setRole(userData.role);
     setCurrentUser(userData);
     setIsLoggedIn(true);
+    localStorage.setItem('revisiio_user', JSON.stringify(userData));
     notify(`Selamat datang, ${userData.name}!`);
   };
 
@@ -187,6 +203,25 @@ export default function App() {
 
     if (result) {
       await refreshKonten();
+      // Update selectedContent so the comment appears immediately
+      setSelectedContent(prev => {
+        if (!prev) return prev;
+        const newVersions = prev.versions.map(v => {
+          if (v.v === targetVersionStr) {
+            return {
+              ...v,
+              comments: [...v.comments, {
+                id: result.id,
+                user: result.user_name,
+                text: result.text,
+                time: new Date(result.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+              }]
+            };
+          }
+          return v;
+        });
+        return { ...prev, versions: newVersions };
+      });
       setCommentInput("");
       notify("Feedback berhasil disimpan.");
     }
@@ -328,7 +363,7 @@ export default function App() {
               </p>
               <p className="text-[8px] font-bold text-indigo-500 uppercase tracking-widest">{role}</p>
             </div>
-            <button onClick={() => { setIsLoggedIn(false); setCurrentUser(null); }} className="text-slate-300 hover:text-rose-500 p-2 transition-colors"><LogOut size={16} /></button>
+            <button onClick={() => { setIsLoggedIn(false); setCurrentUser(null); localStorage.removeItem('revisiio_user'); }} className="text-slate-300 hover:text-rose-500 p-2 transition-colors"><LogOut size={16} /></button>
           </div>
         </div>
       </aside>
