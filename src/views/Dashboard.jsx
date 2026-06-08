@@ -26,11 +26,33 @@ export default function Dashboard({ kontenData, setSelectedContent, setActiveNav
          </div> */}
 
          <div className="space-y-6">
-            <h4 className="text-[11px] font-black uppercase text-slate-400 tracking-widest px-4">Watchlist Deadline</h4>
+            <h4 className="text-[11px] font-black uppercase text-slate-400 tracking-widest px-4">Watchlist Deadline (H-7)</h4>
             <div className="grid grid-cols-1 gap-4">
                {Object.entries(kontenData)
                   .flatMap(([status, items]) => items.map(i => ({ ...i, status })))
-                  .filter(x => x.status !== 'Approved')
+                  .filter(x => x.status !== 'Approved' && new Date(x.deadline) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000))
+                  .slice(0, 10)
+                  .map(item => (
+                     <div key={item.id} className="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow group">
+                        <div className="flex items-center gap-6">
+                           <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 font-black text-xs group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">{item.version}</div>
+                           <div>
+                              <h5 className="font-black text-slate-800 text-[13px] uppercase">{item.title}</h5>
+                              <p className="text-[9px] font-bold text-slate-300 uppercase mt-1 tracking-widest">{item.status} • {item.author}</p>
+                           </div>
+                        </div>
+                        <button onClick={() => { setSelectedContent({ ...item, currentStatus: item.status }); setActiveNav('Workflow'); }} className="text-[9px] font-black bg-slate-900 text-white px-6 py-3 rounded-xl uppercase hover:bg-indigo-600 transition-colors">Detail</button>
+                     </div>
+                  ))}
+            </div>
+         </div>
+
+         <div className="space-y-6 mt-12">
+            <h4 className="text-[11px] font-black uppercase text-slate-400 tracking-widest px-4">Project Lainnya</h4>
+            <div className="grid grid-cols-1 gap-4">
+               {Object.entries(kontenData)
+                  .flatMap(([status, items]) => items.map(i => ({ ...i, status })))
+                  .filter(x => x.status !== 'Approved' && new Date(x.deadline) > new Date(Date.now() + 7 * 24 * 60 * 60 * 1000))
                   .slice(0, 10)
                   .map(item => (
                      <div key={item.id} className="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow group">

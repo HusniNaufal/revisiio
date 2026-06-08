@@ -42,7 +42,7 @@ export async function fetchKontenData(currentUser) {
   if (currentUser.role === 'Super Admin') {
     // Ambil semua
   } else if (currentUser.role.toLowerCase().includes('client')) {
-    projQuery = projQuery.eq('client_id', currentUser.id);
+    projQuery = projQuery.eq('client_id', currentUser.id).neq('status', 'Draft');
   } else {
     // Creator / CC: Cari Client yang di-assign ke dia
     const { data: assignments } = await supabase
